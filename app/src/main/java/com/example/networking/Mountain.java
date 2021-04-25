@@ -41,7 +41,11 @@ public class Mountain {
     public int getHeight() {
         return height;
     }
-
+    public String info(){
+        String txt = new String();
+        txt += name+" "+location+" "+height;
+        return txt;
+    }
     @Override
     public String toString(){
         return name;

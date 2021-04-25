@@ -43,7 +43,7 @@ public class Mountain {
     }
     public String info(){
         String txt = new String();
-        txt += name+" "+location+" "+height;
+        txt += name+" is in the "+location+" and is: "+height+" meters above sea level";
         return txt;
     }
     @Override

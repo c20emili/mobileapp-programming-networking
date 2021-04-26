@@ -13,6 +13,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,32 +29,29 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Mountain> mountainArrayList = new ArrayList<>();
+    private ArrayAdapter<Mountain> mountainArrayAdapter;
+    private ListView myListView;
 
-    ListView myListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mountainArrayList.add(new Mountain("Matterhorn","Alps",4478));
-        mountainArrayList.add(new Mountain("Mont Blanc","Alps",4808));
-        mountainArrayList.add(new Mountain("Denali","Alaska",6190));
-        ArrayAdapter<Mountain> mountainArrayAdapter = new ArrayAdapter<Mountain>(this, R.layout.list_item, R.id.list_item, mountainArrayList);
+        mountainArrayAdapter = new ArrayAdapter<Mountain>(this, R.layout.list_item, R.id.list_item, mountainArrayList);
 
         myListView = findViewById(R.id.my_listview);
         myListView.setAdapter(mountainArrayAdapter);
 
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                Toast.makeText(getApplicationContext(), mountainArrayList.get(position).info(), Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), mountainArrayList.get(position).info(), Toast.LENGTH_LONG).show();
             }
         });
         Button fetch = findViewById(R.id.fetch_json);
         fetch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new JsonTask().execute("HTTPS_URL_TO_JSON_DATA");
+                new JsonTask().execute("https://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
             }
         });
     }
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         protected String doInBackground(String... params) {
             try {
-                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/jsonservice.php");
+                URL url = new URL(params[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -101,7 +102,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String json) {
-            Log.d("TAG", "json");
+            try {
+                mountainArrayList.clear();
+                JSONArray jsonArray = new JSONArray(json);
+                for (int i=0;i<jsonArray.length();i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String name = jsonObject.getString("name");
+                    String location = jsonObject.getString("location");
+                    int height = jsonObject.getInt("size");
+                    Mountain mountain = new Mountain(name, location, height);
+                    mountainArrayList.add(mountain);
+                }
+                mountainArrayAdapter.notifyDataSetChanged();
+            }
+            catch (JSONException e){
+                Log.d("TAG", json+" didn't work because of E:"+e);
+            }
         }
     }
 }

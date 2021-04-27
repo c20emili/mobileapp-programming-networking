@@ -30,15 +30,14 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Mountain> mountainArrayList = new ArrayList<>();
     private ArrayAdapter<Mountain> mountainArrayAdapter;
-    private ListView myListView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mountainArrayAdapter = new ArrayAdapter<Mountain>(this, R.layout.list_item, R.id.list_item, mountainArrayList);
-
-        myListView = findViewById(R.id.my_listview);
+        mountainArrayAdapter = new ArrayAdapter<Mountain>(this, R.layout.list_item, R.id.list_item, mountainArrayList);//kopplar ihop xml-filen, textview elementet och listan
+        ListView myListView = findViewById(R.id.my_listview);
         myListView.setAdapter(mountainArrayAdapter);
 
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

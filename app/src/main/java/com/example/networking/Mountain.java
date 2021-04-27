@@ -17,33 +17,9 @@ public class Mountain {
         location = l;
         height = h;
     }
-
-    public void setName(String n) {
-        name = n;
-    }
-
-    public void setLocation(String l) {
-        location = l;
-    }
-
-    public void setHeight(int h) {
-        height = h;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public int getHeight() {
-        return height;
-    }
     public String info(){
         String txt = new String();
-        txt += name+" is in the "+location+" and is: "+height+"m above sea level";
+        txt += name+" is in "+location+" and is: "+height+"m above sea level";
         return txt;
     }
     @Override
